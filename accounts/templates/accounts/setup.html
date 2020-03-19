@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+	.card{
+		height: 700px;
+		overflow-y: scroll;
+	}
+</style>
+<div class="card">
+	<div class="card-body">
+		<h1> Account Setup </h1>
+		<form method="POST" action="{% url 'accounts:accounts-setup' %}">
+			{% csrf_token %}
+			<label>Email</label>
+			<input type="text" name="email" class="form-control" placeholder="Enter Email ID" required="True">
+			<br>
+			<label>Phone</label>
+			<input type="text" name="phone" class="form-control" placeholder="Enter Phone No" required="True">
+			<br>
+			<label>Password</label>
+			<input type="password" name="password" class="form-control" placeholder="Enter Password" required="True">
+			<br>
+			<label>PIN</label>
+			<input type="password" name="pin" class="form-control" placeholder="Enter PIN for Kiosk" required="True"> 
+			<br>
+			<input class="btn btn-success btn-sm mt-1 mb-1" type="submit" value="Submit">
+		</form>
+	</div>
+</div>
+{% endblock content %}

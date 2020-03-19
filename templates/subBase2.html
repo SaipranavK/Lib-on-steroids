@@ -1,0 +1,198 @@
+{% load staticfiles %}
+<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Meta tags -->
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	    <!--Bootstrap-->
+	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+		<!-- Font Awesome JS -->
+		<script src="https://use.fontawesome.com/7171492551.js"></script>
+
+		<!--Title-->
+		<title>SPI - Library Management Engine</title>
+	</head>
+
+	<style type="text/css">
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+          }
+
+          /* Safari */
+          @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+          }
+
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+
+
+		.nav-tabs .nav-link.active {
+	    	font-weight:bold;
+	    	background-color: transparent;
+	    	border-bottom:3px solid #dd0000;
+	    	border-right: none;
+	    	border-left: none;
+	    	border-top: none;
+		}
+
+		a:hover{
+			text-decoration: none;
+		}
+
+		.article-title {
+		  color: #444444;
+		}
+
+		a.article-title:hover {
+		  color: #428bca;
+		  text-decoration: none;
+		}
+
+		.article-content {
+		  white-space: pre-line;
+		}
+
+		.article-img {
+		  height: 65px;
+		  width: 65px;
+		  margin-right: 16px;
+		}
+
+		.article-metadata {
+		  padding-bottom: 1px;
+		  margin-bottom: 4px;
+		  border-bottom: 1px solid #e3e3e3
+		}
+
+		.article-metadata a:hover {
+		  color: #333;
+		  text-decoration: none;
+		}
+
+		.article-svg {
+		  width: 25px;
+		  height: 25px;
+		  vertical-align: middle;
+		}
+
+		.account-img {
+		  height: 125px;
+		  width: 125px;
+		  margin-right: 20px;
+		  margin-bottom: 16px;
+		  size: cover;
+		}
+
+		.account-heading {
+		  font-size: 2.5rem;
+		}
+
+
+	</style>
+
+	<body style="overflow-x: hidden;background: #fafafa;height: 100%;width: 100%;">
+
+		<!--Navbar-->
+		<nav class="navbar navbar-expand-lg navbar-light bg-white" style="background-color: white !important;
+  			box-shadow: 0 4px 2px -2px rgba(128,0,0);">
+	        <div class="container-fluid">
+	        <!--<a href="http://www.griet.ac.in/" target="_blank">
+	            	<img src="{% static 'images/GRIET_Logo.png' %}" class="img-responsive" style="max-width: auto;max-height:100px;" />
+	        	</a>-->
+	        	<h1>College Name</h1>
+	        </div>
+        </nav>
+
+        <br>
+        <!--content-->
+        <div class="container-fluid" style="margin-bottom: 20px;">
+		        <div class="md-8">
+		        	{{authForm}}
+		        {% if messages %}
+				    {% for message in messages %}
+				    	<div class="alert alert-{{message.tags}}">
+				    		{{message}}
+				    	</div>
+				    	<br><br>
+				    {% endfor %}
+				{% endif %}
+				</div>
+			{% block content %}{% endblock %}
+		</div>
+
+        <!--Footer-->
+        <div class="footer">
+			<div class="row flex align-items-center" style="background-color: #FFF8DC !important;
+  			box-shadow: 0 4px 2px -2px rgba(0,0,0,.2);">
+
+		    	<!-- Grid column -->
+		      	<div class="col-md-7 col-lg-8 d-none d-md-block">
+		      		<a href="#">
+		      			<img src="#" class="img-responsive" style="max-width: 150px;max-height: 150px;" />
+		      		</a>
+		      	</div>
+
+		      	<div class="col-sm-12 col-12 d-md-none">
+		      			<center>
+		      				<a href="#">
+		      					<img src="#" class="img-responsive" style="max-width: 150px;max-height: 150px;" />
+		      				</a>
+		      			</center>
+		      	</div>
+
+		      	<!-- Grid column -->
+		      	<div class="col-md-5 col-lg-4 ml-lg-0">
+		      		<br>
+		        	<!-- Social buttons -->
+		        	<div class="text-center text-md-right">
+		          		<ul class="list-unstyled list-inline">
+			           		<li class="list-inline-item">
+			              		<a class="mx-3" href="#">
+			                		<i class="fa fa-facebook fa-2x" aria-hidden="true"></i>
+			              		</a>
+			            	</li>
+			            	<li class="list-inline-item">
+			              		<a class="mx-3" href="#">
+			                		<i class="fa fa-twitter fa-2x"></i>
+			              		</a>
+			            	</li>
+			            	<li class="list-inline-item">
+			              		<a class="mx-3" href="#">
+			                		<i class="fa fa-google-plus fa-2x"></i>
+			              		</a>
+			            	</li>
+			            	<li class="list-inline-item">
+			              		<a class="mx-3" href="#">
+			                		<i class="fa fa-linkedin fa-2x"></i>
+			              		</a>
+			            	</li>
+		          		</ul>
+		        	</div>
+
+		      	</div>
+
+		      	<div class="col-md-12">
+		      		<hr style="display: block; height: 1px;border: 0; border-top: 1px solid grey;margin: 1em 45em; padding: 0;">
+		      		<center><small>© Developed by <a href="https://www.owlstack.in">OwlStack | Outsourcing</a><br></small></center><br>
+		      	</div>
+			</div>
+		</div>
+		{% block script %}{% endblock %}
+	</body>
+</html>

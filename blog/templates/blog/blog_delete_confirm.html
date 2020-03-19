@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+	{% load staticfiles %}
+		{% block content %}
+			<style>
+				.card{
+					height: 700px;
+					overflow-y: scroll;
+				}
+			</style>	
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-header">
+								<legend>Delete Post</legend>
+							</div>
+							<div class="card-body">
+								<h2 class="text-justify">Are you sure you want to delete the Post - "{{post.title}}" ? This cannot be undone</h2>
+								<hr>
+								<form method="POST" action="{% url 'blog:blog-delete' request.user.username post.slug %}" class="form-group">
+									{% csrf_token %}
+									<input type="submit" class="btn btn-danger" value="Delete">
+								</form>
+								<a class="btn btn-primary" href="/controls/">Cancel</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endblock %}

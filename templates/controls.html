@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+	{% load staticfiles %}
+	{% load crispy_forms_tags %}
+		{% block content %}
+
+			<style>
+			.card{
+				height: 600px;
+				overflow-y: scroll;
+			}
+			</style>	
+
+			<div class="row">
+				<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+					<nav class="nav-justified" id="tabsNav">
+		                <div class="nav nav-tabs " id="nav-tab" role="tablist">
+		                    <a class="nav-item nav-link active" id="pop1-tab" data-toggle="tab" href="#pop1" role="tab" aria-controls="pop1" aria-selected="true"><i class="fa fa-user fa-2x" aria-hidden="true"></i><br>Profile</a>
+		                    <a class="nav-item nav-link" id="pop2-tab" data-toggle="tab" href="#pop2" role="tab" aria-controls="pop2" aria-selected="false"><i class="fa fa-rss fa-2x" aria-hidden="true"></i><br>Your Blog Posts</a>
+		                    <a class="nav-item nav-link" id="pop3-tab" data-toggle="tab" href="#pop3" role="tab" aria-controls="pop3" aria-selected="false"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i><br>Suggestions</a>
+		                </div>
+		            </nav>
+		            <div class="card">
+						<div class="card-body">
+		                	<div class="tab-content" id="nav-tabContent">
+		                  		<div class="tab-pane fade show active" id="pop1" role="tabpanel" aria-labelledby="pop1-tab">
+		                        	<div class="pt-3"></div>
+		                        	<div class="media">
+		   								<img class="rounded-circle account-img" src="{{user.profile.image.url}}">
+		    							<div class="media-body">
+		      								<h3>{{user.username}}</h3>
+		      								<small>{{user.email}}</small>
+		      								<br>
+		      								<small>{{user.branch}}</small>
+		      								<br>
+		      								<small>{{user.gender}}</small>
+		      								<br><br>
+		      								<a href="/password-reset/">Reset Password</a>
+		      								<br><br>
+		      								<p class="text-secondary text-justify">{{user.profile.bio}}</p>	
+		    							</div>
+									</div>
+									<hr>
+		                        	<form method="POST" action="{% url 'accounts:accounts-profile' %}" enctype="multipart/form-data">
+										{% csrf_token %}
+										<fieldset class="form-group">
+											<legend class="bordor-bottom mb-4">Update Profile</legend>
+											{{profileForm|crispy}}
+										</fieldset>
+										<div class="form-group">
+											<button class="btn btn-outline-info" type="submit">
+												Update
+											</button>
+										</div>
+									</form>
+		                      	</div>
+		                  		<div class="tab-pane fade" id="pop2" role="tabpanel" aria-labelledby="pop2-tab">
+		                       		<div class="pt-3"></div>
+									<h2>Your Posts - {{posts.count}}</h2>
+									<br>
+		                        	{% for post in posts %}
+		                        		<article class="media">
+											<img class="rounded-circle article-img" src="{{post.author.profile.image.url}}">
+  											<div class="media-body">
+			    								<div class="article-metadata">
+			      									<a class="mr-2" href="#">{{ post.author }}</a>
+			      									<small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
+			    								</div>
+			    								<h2>{{ post.title }}</h2>
+			    									&nbsp;<a href="{% url 'blog:blog-edit' request.user post.slug %}" class="btn btn-warning btn-sm mt-1 mb-1">Edit</a>
+				    								<form class="form-group" style="float: left;" action="{% url 'blog:blog-delete-confirm' request.user.username post.slug %}" method="POST">
+			    									{% csrf_token %}
+			    									<input class="btn btn-danger btn-sm mt-1 mb-1" type="submit" value="Delete">
+			    								</form>
+			    								<hr>
+			    								<p class="article-content text-justify">{{ post.content }}</p>
+			    								{% if post.thumbnail %}
+			    									<img src="{{post.thumbnail.url}}" style="max-height: 300px;max-width: 300px;">
+			    								{% endif %}
+											</div>
+										</article>
+										<br><br>
+									{% endfor %}
+		                      	</div>
+		                  		<div class="tab-pane fade" id="pop3" role="tabpanel" aria-labelledby="pop3-tab">
+		                       		<div class="pt-3"></div>
+		                        	<form method="POST" action="{% url 'suggestions:suggestions-create' %}">
+										{% csrf_token %}
+										<fieldset class="form-group">
+											<legend class="bordor-bottom mb-4">Feedback</legend>
+											<p class="text-muted">We appreciate your effort and time to pass us improvements to be better. Please be polite and constructive while pushing a suggestion. Your User information is not stored. All the suggestions are completely anonymous and not visible to anyone else other than the admin.
+											{{suggForm|crispy}}
+										</fieldset>
+										<div class="form-group">
+											<button class="btn btn-outline-info" type="submit">
+												Send
+											</button>
+										</div>
+									</form>
+		                      	</div>
+		                	</div>
+	                	</div>
+                	</div>
+				</div>
+			</div>	
+		{% endblock %}

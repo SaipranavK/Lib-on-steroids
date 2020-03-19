@@ -1,0 +1,346 @@
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Meta tags -->
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	    <!--Bootstrap-->
+	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+		<!-- Font Awesome JS -->
+		<script src="https://use.fontawesome.com/7171492551.js"></script>
+
+		<!--HighCharts JS-->
+		<script src="https://code.highcharts.com/highcharts.src.js"></script>
+
+
+
+		<!--Title-->
+		<title>SPI - Library Management Engine</title>
+	</head>
+
+	<style>
+		#id_password{
+			margin-left: 4px;
+		}
+		a:hover{
+			text-decoration: none;
+		}
+		.cardSearch{
+		    max-height:770px;
+		    overflow-y:scroll;
+		}
+	</style>
+
+	<body style="overflow-x: hidden;background: #fafafa;">
+
+		<!--Navbar-->
+		<nav class="navbar navbar-expand-lg navbar-light bg-white" style="background-color: white !important;box-shadow: 0 4px 2px -2px rgba(128,0,0);">
+	        <div class="container-fluid">
+	        	<!--<a href="http://www.griet.ac.in/" target="_blank">
+	            	<img src="{% static 'images/GRIET_Logo.png' %}" class="img-responsive" style="width: auto;height:auto;" />
+	        	</a>-->
+	        	<h1>College Name</h1>
+	        </div>
+	        <div class="container-fluid">
+	        	<div class="nav navbar-nav ml-auto">
+	            	<form class="form-inline my-2 my-lg-0" action="{% url 'accounts:accounts-login' %}" method="POST">
+	            		{% csrf_token %}
+		                {{authForm|crispy}}
+		                &nbsp;
+		                <input class="btn btn-success my-2" type="submit" value="Login">
+		                &nbsp;
+	            	</form>
+	            	<a href="/password-reset/"><button class="btn btn-primary my-2">New User?</button></a>
+	        	</div>
+	        </div>
+        </nav>
+
+        <br>
+
+        <!--Content-->
+		<div class="container-fluid" style="margin-top: 5px;margin-bottom: 20px;">
+		        <div class="md-8">
+		        {% if messages %}
+				    {% for message in messages %}
+				    	<div class="alert alert-{{message.tags}}">
+				    		{{message}}
+				    	</div>
+				    	<br>
+				    {% endfor %}
+				{% endif %}
+				</div>
+			<div class="row">
+				<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+					<div class="card">
+						<div class="card-header"><h2>Library Stats</h2></div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+									<br>
+									<center><h2 class="Count" value="{{book_count}}">{{book_count}}</h2></center>
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+									<center><img src="{% static 'images/books.png' %}" class="img-responsive" style="height:100px;width: 100px;" /></center><br>
+								</div>
+								<br>
+								<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+									<center><h2>No of books in library</h2></center>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+									<center><h2>No of Students registered</h2></center>
+								</div>
+								<br>
+								<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+									<center>
+										<img src="{% static 'images/students.png' %}" class="img-responsive" style="height:100px;width: 100px;" /><br>
+									</center>
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+									<br>
+									<center>
+										<h2 class="Count">{{student_count}}</h2>
+									</center>
+								</div>
+							</div>
+							<hr>
+							<center><h2>Gender Ratio</h2></center>
+							<br>
+							<div class="row">
+								<div class="col-xl-6 col-lg-6 col-md-12 col-sm-6 col-6">
+									<center>
+										<img src="{% static 'images/male.png' %}" class="img-responsive" style="max-height:100px;max-width: 100px;" /><br>
+										<h2 class="Count">{{male_count}}</h2>
+									</center>
+								</div>
+								<br>
+								<div class="col-xl-6 col-lg-6 col-md-12 col-sm-6 col-6">
+									<center>
+										<img src="{% static 'images/female.png' %}" class="img-responsive" style="max-height:100px;max-width: 100px;" /><br>
+										<h2 class="Count">{{female_count}}</h2>
+									</center>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+									<center>
+										<h2>Total Transactions</h2>
+										<img src="{% static 'images/transactions.png' %}" class="img-responsive" style="max-height:100px;max-width: 100px;" /><br>
+										<h2 class="Count">{{transactions_count}}</h2>
+									</center>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br>
+				</div>
+
+				<div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
+					<div class="card">
+						<div class="card-header">
+							<h2>Library Layout Map</h2>
+						</div>
+						<div class="card-body">
+							<a href="{% static 'images/library_final-1.jpg' %}" target="_blank"><img src="{% static 'images/library_final-1.jpg' %}" class="img-thumbnail" style="max-width: 100%;max-height: auto;" /></a>
+						</div>
+					</div>
+					<br>
+					<div class="card">
+						<div class="card-header">
+							<h2>About the System</h2>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+									<p class="text-justify">Cloud based library management system with support for kiosk devices for autonomous book lendings and returns</p>
+								</div>
+								<br>
+							</div>
+						</div>
+					</div>
+					<br>
+				</div>
+
+				<div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12">
+				    <form class="form-inline" method="GET">
+			           	<input class="form-control" type="text" name="query" placeholder="Search Book">
+			           	<input class="btn btn-success ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" type="submit" value="Search">
+	            	</form>
+	            	<br>
+	            	{% if request.method == 'GET' and result %}
+	            	<div class="card cardSearch">
+	            		<div class="card-header"><h1>Results</h1></div>
+	            		<div class="card-body">
+	            			<div class="row">
+								<div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-2">
+									<b>Number</b>
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+									<b>Title</b>
+								</div>
+								<div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-2">
+									<b>Author</b>
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+									<b>Category</b>
+								</div>
+							</div>
+							<hr>
+	            			{% for book in books %}
+	            			<div class="row">
+								<div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-2">
+									{{book.book_number}}
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+									{{book.book_title}}
+								</div>
+								<div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-2">
+									{{book.book_author}}
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+									{{book.book_category}}
+								</div>
+							</div>
+		                        <hr>
+	            			{% endfor %}
+	            		</div>
+	            	</div>
+	            	<br>
+	            	{% elif request.method == 'GET' and result == 0 %}
+	            	<div class="card">
+	            		<div class="card-header"><h1>Results</h1></div>
+	            		<div class="card-body">
+	            			<b>No matching books. Try again with some another book</b>
+	            		</div>
+	            	</div>
+	            	<br>
+	            	{% else %}
+	            	<div class="card cardSearch">
+	            		<div class="card-header"><h1>Recently Added</h1></div>
+	            		<div class="card-body">
+	            			<div class="row">
+								<div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-2">
+									<b>Number</b>
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+									<b>Title</b>
+								</div>
+								<div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-2">
+									<b>Author</b>
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+									<b>Category</b>
+								</div>
+							</div>
+							<hr>
+	            			{% for book in recently_added %}
+	            			<div class="row">
+								<div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-2">
+									{{book.book_number}}
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+									{{book.book_title}}
+								</div>
+								<div class="col-xl-3 col-lg-2 col-md-2 col-sm-2 col-2">
+									{{book.book_author}}
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+									{{book.book_category}}
+								</div>
+							</div>
+		                        <hr>
+	            			{% endfor %}
+	            		</div>
+	            	</div>
+	            	{% endif %}
+					<br>
+				</div>
+			</div>
+		</div>
+
+
+		<!--Footer-->
+		<div class="footer" style="bottom: 0px;">
+			<div class="row flex align-items-center" style="background-color: #FFF8DC !important;
+  			box-shadow: 0 4px 2px -2px rgba(0,0,0,.2);">
+
+		    	<!-- Grid column -->
+		      	<div class="col-md-7 col-lg-8 d-none d-md-block">
+		      		<a href="https://www.standardpi.com/">
+		      			<img src="https://www.standardpi.com/static/images/spi_transparent.webp" class="img-responsive" style="max-width: 150px;max-height: 150px;" />
+		      		</a>
+		      	</div>
+
+		      	<div class="col-sm-12 col-12 d-md-none">
+		      			<center>
+		      				<a href="https://www.standardpi.com/">
+		      					<img src="https://www.standardpi.com/static/images/spi_transparent.webp" class="img-responsive" style="max-width: 150px;max-height: 150px;" />
+		      				</a>
+		      			</center>
+		      	</div>
+
+		      	<!-- Grid column -->
+		      	<div class="col-md-5 col-lg-4 ml-lg-0">
+		      		<br>
+		        	<!-- Social buttons -->
+		        	<div class="text-center text-md-right">
+		          		<ul class="list-unstyled list-inline">
+			           		<li class="list-inline-item">
+			              		<a class="mx-3" href="#">
+			                		<i class="fa fa-facebook fa-2x" aria-hidden="true"></i>
+			              		</a>
+			            	</li>
+			            	<li class="list-inline-item">
+			              		<a class="mx-3" href="#">
+			                		<i class="fa fa-twitter fa-2x"></i>
+			              		</a>
+			            	</li>
+			            	<li class="list-inline-item">
+			              		<a class="mx-3" href="#">
+			                		<i class="fa fa-google-plus fa-2x"></i>
+			              		</a>
+			            	</li>
+			            	<li class="list-inline-item">
+			              		<a class="mx-3" href="#">
+			                		<i class="fa fa-linkedin fa-2x"></i>
+			              		</a>
+			            	</li>
+		          		</ul>
+		        	</div>
+
+		      	</div>
+
+		      	<div class="col-md-12">
+		      		<hr style="display: block; height: 1px;border: 0; border-top: 1px solid grey;margin: 1em 45em; padding: 0;">
+		      		<center><small>© Developed by <a href="https://www.owlstack.in">OwlStack | Outsourcing</a><br></small></center><br>
+		      	</div>
+			</div>
+		</div>
+
+
+		<script>
+			$('.Count').each(function () {
+    $(this).prop('Counter',0).animate({
+        Counter: $(this).text()
+    }, {
+        duration: 4000,
+        easing: 'swing',
+        step: function (now) {
+            $(this).text(Math.ceil(now));
+        }
+    });
+});
+		</script>
+
+	</body>
+</html>

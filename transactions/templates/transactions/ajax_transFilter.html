@@ -1,0 +1,59 @@
+{% if transactions %}
+<h2>{{filter_type}}</h2>
+<hr>
+<div class="row">
+	<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+		<b>User/RollNo</b>
+	</div>
+	<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+		<b>Book</b>
+	</div>
+	<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+		<b>Issue Date</b>
+	</div>
+	<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+		<b>Return Date</b>
+	</div>
+	<div class="col-xl-1 col-lg-2 col-md-2 col-sm-2 col-2">
+		<b>Fine</b>
+	</div>
+	<div class="col-xl-1 col-lg-2 col-md-2 col-sm-2 col-2">
+		<b>Status</b>
+	</div>
+</div>
+<hr>
+{% for transaction in transactions %}
+<div class="row">
+	<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+		{{transaction.user}}
+	</div>
+	<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+		{{transaction.book.book_title}}
+	</div>
+	<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+		{{transaction.issue_date}}
+	</div>
+	<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+		{% if transaction.return_date == None %}
+			Pending
+		{% else %}
+			{{transaction.return_date}}
+		{% endif %}
+	</div>
+	<div class="col-xl-1 col-lg-2 col-md-2 col-sm-2 col-2">
+		{{transaction.fine}}
+	</div>
+	<div class="col-xl-1 col-lg-2 col-md-2 col-sm-2 col-2">
+		{% if transaction.fine_status == False %}
+			Pending
+		{% else %}
+			Paid
+		{% endif %}
+	</div>
+</div>
+<hr>
+{% endfor %}
+{% else %}
+<b>Not enough data</b>
+<br><br>
+{% endif %}

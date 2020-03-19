@@ -1,0 +1,56 @@
+{% if result %}
+<h3>Results</h3>
+<hr>
+    <div class="row">
+		<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+			<b>Book Number</b>
+		</div>
+		<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+			<b>Title</b>
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			<b>Author</b>
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			<b>Category</b>
+		</div>
+	</div>
+<hr>
+{% if books %}
+{% for book in books %}
+	<div class="row">
+		<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+			{{book.book_number}}
+		</div>
+		<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+			{{book.book_title}}
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			{{book.book_author}}
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			{{book.book_category}}
+		</div>
+		{% if book.ebook_attachments %}
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			<hr>
+			<a href="{{book.ebook_attachments.url}}" class="btn btn-primary btn-sm mt-1 mb-1" target="_blank">Ebook File</a>
+		</div>
+		{% endif %}
+	</div>
+		<hr>
+		{% if user.is_staff %}
+			&nbsp;<a href="{% url 'catalog:book-edit' book.book_number %}" class="btn btn-warning btn-sm mt-1 mb-1">Edit</a>
+			<form class="form-group" style="float: left;" action="{% url 'catalog:book-delete-confirm' book.book_number %}" method="POST">
+				{% csrf_token %}
+				<input class="btn btn-danger btn-sm mt-1 mb-1" type="submit" value="Delete">
+			</form>
+			<hr>
+			<br><br>
+		{% endif %}
+{% endfor %}
+{% else %}
+	<b>No results matching query.</b>
+	<br><br>
+{% endif %}
+{% endif %}

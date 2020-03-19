@@ -1,0 +1,161 @@
+{% extends 'subBase2.html' %}
+	{% load staticfiles %}
+	{% load crispy_forms_tags %}
+		{% block content %}
+
+		<style>
+			.kiosk-board{
+				height: 680px;
+				overflow-y:scroll;
+			}
+		</style>
+		<div class="container kiosk-board">
+			<img src="{{request.user.profile.image.url}}" style="max-height: 50px;max-width:50px;" class="img-rounded">
+			<h3>Hello,{{request.user}}</h3>
+			<a href="/kiosk/"><button class="btn btn-danger">Logout</button></a>
+			<hr>
+			<form class="form-inline" method="POST" action="{% url 'transactions:transaction-manager-kiosk' %}">
+				{% csrf_token %}
+				<input type="hidden" name="user" id="user" value={{request.user}}>
+			    <input class="btn btn-success" name="issue" type="submit" value="Create Transaction">
+			    <input class="btn btn-primary ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="return" type="submit" value="Make Return">
+	        </form>
+	        <br>
+	        <br>
+		    <form class="form-inline" method="GET">
+			    <input class="form-control" id="transquery" type="text" name="query" placeholder="Search Book" autofocus>
+			        &nbsp;&nbsp;&nbsp;<input type="checkbox" id="nobarcode" onclick="validate()">&nbsp;Barcode Error?
+			        &nbsp;&nbsp;&nbsp;<input class="form-control" id="mquery" type="text" name="mquery"  style="display: none;" placeholder="Use if barcode fails">
+	            </form>
+	            <br>
+	            <p class="text-justify" id="messagedump"></p>
+	            <div id="mqueryjsondump"></div>
+	            <br><br>
+	            <h2>Current Transaction Queue</h2>
+	            <hr>
+	            <div class="row">
+					<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+						<b>Number</b>
+					</div>
+					<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+						<b>Title</b>
+					</div>
+					<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+						<b>Author</b>
+					</div>
+					<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+						<b>Category</b>
+					</div>
+				</div>
+				<hr>
+				<p class="text-justify" id="transStackdump"></p>
+				<br><br>
+		</div>
+		{% endblock %}
+
+		{% block script %}
+		<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+		<script src="https://code.highcharts.com/highcharts.src.js"></script>
+		<script>
+			$("#transquery").keyup(function () {
+      			var transquery=$(this).val();
+      			if(transquery.length!=0){
+	      			$.ajax({
+				        url: "{% url 'transactions:transaction-stack-add' %}",
+				        data: {
+				          'book_number': transquery
+				        },
+				        success: StackSuccess,
+				        dataType: 'html'
+	      			});
+	      		}
+	      		else{
+      				$('#messagedump').html("<b>Keep Looking or Complete the Transaction !</b>");
+      			}
+    		});
+
+    		$("#mquery").keyup(function () {
+      			var mquery=$(this).val();
+      			if(mquery.length!=0 || mquery!=''){
+	      			$.ajax({
+				        url: "{% url 'catalog:book-mtrans-search' %}",
+				        data: {
+				          'mquery': mquery
+				        },
+				        success: mquerySuccess,
+				        dataType: 'html'
+	      			});
+	      			 $('#messagedump').html("");
+	      		}
+	      		else{
+      				$('#messagedump').html("<b>Keep Looking or Complete the Transaction !</b>");
+      				$('#mqueryjsondump').html("");
+      			}
+    		});
+
+    		function mquerySuccess(data,textStatus,jqXHR){
+    			$('#mqueryjsondump').html(data);
+    		}
+
+    		function AddtoStack(book_number){
+    			$.ajax({
+    				url:"{% url 'transactions:transaction-stack-add' %}",
+    				dataType:'html',
+    				data: {
+    					'book_number': book_number
+    				},
+    				success: StackSuccess
+    			});
+    		}
+
+    		function RemoveFromStack(book_number){
+    			$.ajax({
+    				url:"{% url 'transactions:transaction-stack-delete' %}",
+    				dataType:'html',
+    				data: {
+    					'book_number': book_number
+    				},
+    				success: StackSuccess
+    			});
+    		}
+
+    		function StackSuccess(data,textStatus,jqXHR)
+    		{
+    			$('#messagedump').html(data);
+    			TransactionStackAjax();
+    			clearForm();
+    		}
+
+    		function clearForm(){
+    			document.getElementById("transquery").value="";
+    			document.getElementById("mquery").value="";
+    			document.getElementById("mqueryjsondump").innerHTML="";
+    		}
+
+    		function TransactionStackAjax(){
+            	$.ajax({
+    				url:"{% url 'transactions:transaction-stack-kiosk' %}",
+    				dataType:'html',
+    				success: TransStackSuccess
+    			});
+        	}
+
+    		function TransStackSuccess(data,textStatus,jqXHR)
+    		{
+    			$('#transStackdump').html(data);
+    		}
+
+    		function validate() {
+        		if (document.getElementById('nobarcode').checked) {
+            		document.getElementById('mquery').style.display="block";
+        		}
+        		else {
+            		document.getElementById('mquery').style.display="none";
+            	}
+    		}
+
+    		$(document).ready(TransactionStackAjax());
+
+    	</script>
+
+		{% endblock %}

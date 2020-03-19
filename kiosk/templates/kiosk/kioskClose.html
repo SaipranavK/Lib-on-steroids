@@ -1,0 +1,26 @@
+{% extends 'subBase2.html' %}
+	{% load staticfiles %}
+	{% load crispy_forms_tags %}
+		{% block content %}
+
+		<style>
+			.kioskClose{
+				height: 600px;
+				overflow-y:scroll;
+			}
+			</style>
+
+            <h1>Process Close</h1>
+            <hr>
+            	<div class="row kioskClose">
+					
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+						{{reciept}}
+						<button class="btn btn-success">New transaction</button>
+		          	</div>
+
+
+			
+				</div>
+        {% endblock %}
+

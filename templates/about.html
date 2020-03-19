@@ -1,0 +1,86 @@
+{% extends 'subBase2.html' %}
+	{% load staticfiles %}
+	{% load crispy_forms_tags %}
+		{% block content %}
+
+			<div class="row">
+				<div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
+				    <div class="card">
+						<div class="card-header"><h2>Library Stats</h2></div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+									<center><img src="{% static 'images/books.png' %}" class="img-responsive" style="height:60px;width: 60px;" /></center>
+									<center><h1>1,26,445</h1></center>
+									<center><h2>No of books in library</h2></center>
+								</div>
+								<br><br>
+								<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+								    <center><img src="{% static 'images/ebook.png' %}" class="img-responsive" style="height:60px;width: 60px;" /></center>
+								    <center><h1>10</h1></center>
+                                    <center><h2>No of E-books in library</h2></center>
+								</div>
+								<br><br>
+								<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+									<center><img src="{% static 'images/report.png' %}" class="img-responsive" style="height:60px;width: 60px;" /><br></center>
+								    <center><h1>267</h1></center>
+									<center><h2>No of Journals</h2></center>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<br>
+								<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+									<center><img src="{% static 'images/seo.png' %}" class="img-responsive" style="height:60px;width: 60px;" /><br></center>
+								    <center><h1>9936</h1></center>
+									<center><h2>No of E-Journals</h2></center>
+								</div>
+								<br><br>
+								<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+								    <center><img src="{% static 'images/magazine.png' %}" class="img-responsive" style="height:60px;width: 60px;" /><br></center>
+								    <center><h1>36</h1></center>
+									<center><h2>No of Magazines</h2></center>
+								</div>
+								<br><br>
+								<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+								    <center><img src="{% static 'images/students.png' %}" class="img-responsive" style="height:60px;width: 60px;" /><br></center>
+								    <center><h1>5000+</h1></center>
+									<center><h2>No of Students registered</h2></center>
+								</div>
+							</div>
+							<hr>
+							<center><h2>Gender Ratio</h2></center>
+							<br>
+							<div class="row">
+								<div class="col-xl-6 col-lg-6 col-md-12 col-sm-6 col-6">
+									<center>
+										<img src="{% static 'images/male.png' %}" class="img-responsive" style="max-height:60px;max-width: 60px;" /><br>
+										<h1 class="Count">{{male_count}}</h1>
+									</center>
+								</div>
+								<br>
+								<div class="col-xl-6 col-lg-6 col-md-12 col-sm-6 col-6">
+									<center>
+										<img src="{% static 'images/female.png' %}" class="img-responsive" style="max-height:60px;max-width: 60px;" /><br>
+										<h1 class="Count">{{female_count}}</h1>
+									</center>
+								</div>
+							</div>
+							<hr>
+						</div>
+					</div>
+				</div>
+				<br>
+			    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12">
+			        <div class="card">
+						<div class="card-header">
+							<h2>Library Layout Map</h2>
+						</div>
+						<div class="card-body">
+						   	<a href="{% static 'images/library_final-1.jpg' %}" target="_blank"><img src="{% static 'images/library_final-1.jpg' %}" class="img-thumbnail" style="height:690px;width:auto;" /></a>
+						</div>
+					</div>
+			    </div>
+		    </div>
+
+		{% endblock %}

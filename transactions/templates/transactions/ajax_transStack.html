@@ -1,0 +1,23 @@
+{% for book in transactionStack %}
+	<div class="row">
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			{{book.book.book_number}}
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			{{book.book.book_title}}
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			{{book.book.book_author}}
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			{{book.book.book_category}}
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			{{book.book.book_shelf}}
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			<a href="javascript:RemoveFromStack({{book.book.book_number}})" class="btn btn-info btn-sm mt-1 mb-1">Remove from Queue</a>
+		</div>
+	</div>
+	<hr>
+{% endfor %}

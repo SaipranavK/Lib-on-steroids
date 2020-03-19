@@ -1,0 +1,24 @@
+{% if result %}
+<br>
+<h2>User Information</h2>
+<hr><div class="row">
+		<div class="col-md-1">
+			<img src="{{user.profile.image.url}}" class="img-rounded" style="height: 65px;width:65px;">
+		</div>
+		<div class="col-md-2">
+			<h3>{{user.username}}</h3>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-md-12">
+			<small>{{user.gender}}</small>
+			<br><small>{{user.email}}</small>
+			<br><small>{{user.branch}}</small>
+			<br><small>{{user.phone}}</small>
+		</div>
+	</div>
+	<hr>
+{% else %}
+<b>User doesn't Exist</b>
+{% endif %}

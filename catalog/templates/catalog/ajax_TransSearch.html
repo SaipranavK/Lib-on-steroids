@@ -1,0 +1,45 @@
+{% if result %}
+<h3>Results</h3>
+<hr>
+    <div class="row">
+		<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+			<b>Book Number</b>
+		</div>
+		<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+			<b>Title</b>
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			<b>Author</b>
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			<b>Category</b>
+		</div>
+	</div>
+<hr>
+{% if books %}
+{% for book in books %}
+	<div class="row">
+		<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+			{{book.book_number}}
+		</div>
+		<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+			{{book.book_title}}
+		</div>
+		<div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 col-3">
+			{{book.book_author}}
+		</div>
+		<div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 col-3">
+			{{book.book_category}}
+		</div>
+		<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+			<a href="javascript:AddtoStack({{book.book_number}})" class="btn btn-info btn-sm mt-1 mb-1">Add to Queue</a>
+		</div>
+	</div>
+	<hr>
+{% endfor %}
+{% else %}
+	<b>No results matching query.</b>
+	<br><br>
+{% endif %}
+{% endif %}
+

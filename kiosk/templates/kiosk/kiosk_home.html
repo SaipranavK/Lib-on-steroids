@@ -1,0 +1,46 @@
+{% extends 'subBase2.html' %}
+	{% load staticfiles %}
+	{% load crispy_forms_tags %}
+		{% block content %}
+
+		<style>
+			.barcode{
+				height: 600px;
+				overflow-y:scroll;
+			}
+			</style>
+
+            <h1>Kiosk Login</h1>
+            <hr>
+            <div class="container">
+            	<div class="row barcode">
+
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+						<br>
+						<form method="POST" action="{% url 'kiosk:kiosk-opPicker' %}">
+					    	<center>
+
+						    	{% csrf_token %}
+					           	<input class="form-control" type="text" id="userBarcode" type="text" name="userBarcode" placeholder="Enter User Barcode" autofocus="true">
+					           	<br><input class="form-control" type="password" id="userPin" name="userPin" style="display:none;" placeholder="Enter PIN">
+					           	<br><input type="submit" class="btn btn-success"  value="Login">
+					
+
+		            		</center>
+		            	</form>
+		          	</div>
+				</div>
+			</div>
+        {% endblock %}
+
+        {% block script %}
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script type="text/javascript">
+        $("#userBarcode").change(function () {
+      		var userBarcode=$(this).val();
+      		if(userBarcode.length!=0){
+      			$("#userPin").css("display", "block");
+      		}
+      	})
+      	</script>
+    	{% endblock %}

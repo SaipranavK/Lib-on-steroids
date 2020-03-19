@@ -1,0 +1,43 @@
+<h1>Results</h1>
+<hr>
+{% if result %}
+	{% if transactions %}
+		{% for transaction in transactions %}
+			<div class="row">
+				<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+					{{transaction.user}}
+				</div>
+				<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+					{{transaction.book.book_title}}
+				</div>
+				<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+					{{transaction.issue_date}}
+				</div>
+				<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+					{% if transaction.return_date == None %}
+						Pending
+					{% else %}
+					{{transaction.return_date}}
+					{% endif %}
+				</div>
+				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-2 col-2">
+					{{transaction.fine}}
+				</div>
+				<div class="col-xl-1 col-lg-2 col-md-2 col-sm-2 col-2">
+					{% if transaction.fine_status == False %}
+						Pending
+					{% else %}
+						Paid
+					{% endif %}
+				</div>
+			</div>
+			<hr>
+		{% endfor %}
+		<h1>All Transactions</h1>
+	{% else %}
+		<b>No transactions found</b>
+		<hr>
+	{% endif %}
+{% else %}
+<b>User doesnt Exist</b>
+{% endif %}

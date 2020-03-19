@@ -1,0 +1,62 @@
+{% extends 'subBase2.html' %}
+	{% load staticfiles %}
+	{% load crispy_forms_tags %}
+		{% block content %}
+
+			<style>
+			.search{
+				height: 600px;
+				overflow-y:scroll;
+			}
+			</style>
+
+            <h1>Search</h1>
+            <hr>
+
+			<div class="row search">
+				<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+				    <form class="form-inline" method="GET">
+			           	<input class="form-control" id="query" type="text" name="query" placeholder="Search Book">
+	            	</form>
+	            	<hr>
+	                <center>
+						<div id="load" style="display: none" class="loader"></div>
+					</center>
+					<p class="text-justify" id="jsondump"></p>
+				</div>
+			</div>
+
+        {% endblock %}
+
+        {% block script %}
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script>
+			    $("#query").keyup(function () {
+      			var query=$(this).val();
+      			if(query.length!=0){
+      			    $("#load").css("display", "block");
+      			    $("#jsondump").css("display", "none")
+	      			$.ajax({
+				        url: "{% url 'catalog:book-search-page' %}",
+				        data: {
+				          'query': query
+				        },
+				        success: searchSuccess,
+				        dataType: 'html'
+	      			});
+      			}
+      			else{
+      			    $("#load").css("display", "none");
+      			    $("#jsondump").css("display", "block");
+      				$('#jsondump').html("<b>Keep Looking!</b>");
+      			}
+    		});
+
+    		function searchSuccess(data,textStatus,jqXHR)
+    		{
+    		    $("#load").css("display", "none");
+    		    $("#jsondump").css("display", "block");
+    			$('#jsondump').html(data);
+    		}
+		</script>
+		{% endblock %}

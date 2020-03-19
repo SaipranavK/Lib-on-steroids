@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+	{% load staticfiles %}
+	{% load crispy_forms_tags %}
+		{% block content %}
+
+			<style>
+			.card{
+				height: 700px;
+				overflow-y: scroll;
+			}
+			</style>	
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-header">
+								<legend>Edit</legend>
+							</div>
+							<div class="card-body">
+								<form method="POST" action="{% url 'announcements:announcements-edit' announcement.slug %} " class="form-group" enctype="multipart/form-data">
+									{% csrf_token %}
+									{{editForm|crispy}}
+									<input type="submit" class="btn btn-success" value="Update">
+								</form>
+								<a class="btn btn-primary" href="/controls/">Cancel</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endblock %}

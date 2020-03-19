@@ -1,0 +1,720 @@
+{% extends 'base.html' %}
+	{% load staticfiles %}
+	{% load crispy_forms_tags %}
+		{% block content %}
+
+			<style>
+			.card{
+				height: 550px;
+				overflow-y: scroll;
+			}
+
+			</style>
+
+			{% if request.user.is_staff %}
+			<div class="row">
+				<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+					<h2>Admin Console</h2>
+					<hr>
+					<nav class="nav-justified ">
+		                <div class="nav nav-tabs " id="nav-tab" role="tablist">
+		                    <a class="nav-item nav-link active" id="Apop1-tab" data-toggle="tab" href="#Apop1" role="tab" aria-controls="Apop1" aria-selected="true"><i class="fa fa-retweet fa-2x" aria-hidden="true"></i><br>Issue & Returns</a>
+		                    <a class="nav-item nav-link" id="Apop2-tab" data-toggle="tab" href="#Apop2" role="tab" aria-controls="Apop2" aria-selected="false"><i class="fa fa-database fa-2x" aria-hidden="true"></i><br>Transactions</a>
+		                    <a class="nav-item nav-link" id="Apop3-tab" data-toggle="tab" href="#Apop3" role="tab" aria-controls="Apop3" aria-selected="false"><i class="fa fa-table fa-2x" aria-hidden="true"></i><br>Bulk Additions/Export Data</a>
+		                    <a class="nav-item nav-link" id="Apop4-tab" data-toggle="tab" href="#Apop4" role="tab" aria-controls="Apop4" aria-selected="false"><i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i><br>Reports</a>
+		                </div>
+		            </nav>
+		            <div class="card">
+						<div class="card-body">
+		                	<div class="tab-content" id="nav-tabContent">
+		                  		<div class="tab-pane fade show active" id="Apop1" role="tabpanel" aria-labelledby="Apop1-tab">
+		                        	<div class="pt-3"></div>
+		                        	<form class="form-inline" method="POST" action="{% url 'transactions:transaction-manager' %}">
+										{% csrf_token %}
+										<input class="form-control" type="text" name="user" id="userquery" placeholder="Enter username/Rollno">
+										<br>
+			           					<input class="btn btn-success ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="issue" type="submit" value="Create Transaction">
+			           					<input class="btn btn-primary ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="return" type="submit" value="Make Return">
+	            					</form>
+	            					<br>
+	            					<div id="userloaddump"></div>
+	            					<br>
+		                        	<form class="form-inline" method="GET">
+			           					<input class="form-control" id="transquery" type="text" name="query" placeholder="Search Book" autofocus>
+			           					&nbsp;&nbsp;&nbsp;<input type="checkbox" id="nobarcode" onclick="validate()">&nbsp;Barcode Error?
+			           					&nbsp;&nbsp;&nbsp;<input class="form-control" id="mquery" type="text" name="mquery"  style="display: none;" placeholder="Use if barcode fails">
+	            					</form>
+	            					<br>
+	            					<p class="text-justify" id="messagedump"></p>
+	            					<div id="mqueryjsondump"></div>
+	            					<br><br>
+	            					<h2>Current Transaction Queue</h2>
+	            					<hr>
+	            					<div class="row">
+										<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+											<b>Number</b>
+										</div>
+										<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+											<b>Title</b>
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Author</b>
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Category</b>
+										</div>
+									</div>
+									<hr>
+									<p class="text-justify" id="transStackdump"></p>
+									<br><br>
+	            				</div>
+		                  		<div class="tab-pane fade" id="Apop2" role="tabpanel" aria-labelledby="Apop2-tab">
+		                       		<div class="pt-3"></div>
+		                       		<form class="form-inline" method="GET">
+			           					<input class="form-control" id="admintransquery" type="text" name="admintransquery" placeholder="Search by User">
+	            					</form>
+	            					<hr>
+	            					<p class="text-justify" id="admintransjsondump"></p>
+
+										<a class="btn btn-primary ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="all" href="javascript:TransactionFilters('all')">All</a>
+			                      		<a class="btn btn-secondary ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="30days" href="javascript:TransactionFilters('month')">Last 30 days</a>
+			                      		<a class="btn btn-info ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="7days" href="javascript:TransactionFilters('week')">Last 7 days</a>
+			                      		<a class="btn btn-dark ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="pending" href="javascript:TransactionFilters('pending')">Pending Returns</a>
+
+		                      		<hr>
+		                      		<p class="text-justify" id="filterdump"></p>
+		                      		<div class="row" id="baseTransactions1">
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>User/RollNo</b>
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Book</b>
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Issue Date</b>
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Return Date</b>
+										</div>
+										<div class="col-xl-1 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Fine</b>
+										</div>
+										<div class="col-xl-1 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Status</b>
+										</div>
+									</div>
+									<div  id="baseTransactions2">
+									<hr>
+		                        	{% for transaction in transactions %}
+		                        	<div class="row">
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											{{transaction.user}}
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											{{transaction.book.book_title}}
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											{{transaction.issue_date}}
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											{% if transaction.return_date == None %}
+											Pending
+											{% else %}
+											{{transaction.return_date}}
+											{% endif %}
+										</div>
+										<div class="col-xl-1 col-lg-2 col-md-2 col-sm-2 col-2">
+											{{transaction.fine}}
+										</div>
+										<div class="col-xl-1 col-lg-2 col-md-2 col-sm-2 col-2">
+											{% if transaction.fine_status == False %}
+											Pending
+											{% else %}
+											Paid
+											{% endif %}
+										</div>
+									</div>
+									<hr>
+		                        	{% endfor %}
+		                        	</div>
+								</div>
+								<div class="tab-pane fade" id="Apop3" role="tabpanel" aria-labelledby="Apop3-tab">
+									<div class="row">
+										<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+											<h2>Bulk Additions</h2>
+											<hr>
+											<form method="POST" enctype="multipart/form-data" action="{% url 'dataControl:bulk-import' %}">
+												{% csrf_token %}
+												<div class="form-inline">
+													<input type="hidden" name="college" value="Gokaraju Rangaraju Institute of Engineering and Technology">
+													<input class="form-control" type="text" name="model" placeholder="Data Model">
+													<input type="file" name="Updfile">
+												</div>
+												<br>
+												<input type="submit" class="btn btn-info" value="Bulk Additions">
+											</form>
+											<br><br>
+										</div>
+										<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+											<h2>Export Data</h2>
+											<hr>
+											<form method="POST" action="{% url 'dataControl:exports' %}">
+												{% csrf_token %}
+												<div class="form-inline">
+													<input type="submit" class="btn btn-primary ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="Users" value="Users">
+													<input type="submit" class="btn btn-secondary ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="Catalog" value="Catalog">
+													<input type="submit" class="btn btn-warning ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="Transactions" value="Transactions">
+												</div>
+												<br>
+											</form>
+											<br><br>
+											<h2>Export Data with Filters</h2>
+											<hr>
+											<div class="row">
+											    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        											<form method="POST" action="{% url 'dataControl:exports' %}">
+        												{% csrf_token %}
+
+        												    <input type="radio" name="Department" value="department" checked> Department
+        												   <br><input type="text" name="DepartmentName" placeholder="Name of the Department">
+        													<br><br>
+        													<div class="form-inline">
+        													    <input type="submit" class="btn btn-primary ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="Users" value="Users">
+        													    <input type="submit" class="btn btn-warning ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="Transactions" value="Transactions">
+        													</div>
+        												<br>
+        											</form>
+											    </div>
+											    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        											<form method="POST" action="{% url 'dataControl:exports' %}">
+        												{% csrf_token %}
+        												    <input type="radio" name="filterType" value="category" checked> Category
+        												    <input type="radio" name="filterType" value="title"> Title
+        												    <br><input type="text" name="filterVal" placeholder="Enter the value of Filter">
+        													<br><br><input type="submit" class="btn btn-secondary ml-1 ml-sm-1 ml-md-0 ml-lg-2 ml-xl-2" name="Catalog" value="Catalog">
+        												<br>
+        											</form>
+        										</div>
+        									</div>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane fade" id="Apop4" role="tabpanel" aria-labelledby="Apop4-tab">
+									<a class="btn btn-primary" href="javascript:GenderChartStream()">Load Gender Chart</a>
+									<div class="text-justify" id="chartDump"></div>
+								</div>
+		                	</div>
+	                	</div>
+                	</div>
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-12">
+					<h2>View Panel</h2>
+					<hr>
+					<nav class="nav-justified" id="tabsNav">
+		                <div class="nav nav-tabs " id="nav-tab" role="tablist">
+		                    <a class="nav-item nav-link active" id="pop1-tab" data-toggle="tab" href="#pop1" role="tab" aria-controls="pop1" aria-selected="true"><i class="fa fa-bell fa-2x" aria-hidden="true"></i><br>Announcements</a>
+		                    <a class="nav-item nav-link" id="pop2-tab" data-toggle="tab" href="#pop2" role="tab" aria-controls="pop2" aria-selected="false"><i class="fa fa-rss fa-2x" aria-hidden="true"></i><br>Blogs</a>
+		                    <a class="nav-item nav-link" id="pop3-tab" data-toggle="tab" href="#pop3" role="tab" aria-controls="pop3" aria-selected="false"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i><br>Suggestions</a>
+		                </div>
+		            </nav>
+		            <div class="card">
+						<div class="card-body">
+		                	<div class="tab-content" id="nav-tabContent">
+		                  		<div class="tab-pane fade show active" id="pop1" role="tabpanel" aria-labelledby="pop1-tab">
+		                        	<div class="pt-3"></div>
+		                        	{% if request.user.is_staff %}
+		                        	<p class="text-justify"><small class="text-muted">Please follow conduct and honor the decorum of the institute while posting any Announcement. Any offensive or spam content will be prosecuted seriously.</small>
+									</p>
+									<a href="{% url 'announcements:announcements-create' %}" class="btn btn-success btn-sm mt-1 mb-1">Make Announcement</a>
+									<br><br>
+									{% endif %}
+		                        	{% for announcement in announcements %}
+		                        		{% if announcement.attachments %}
+		                        		<a href="{{announcement.attachments.url}}" target="_blank">
+		                        			<p class="text-justify">{{ announcement.content }}
+		                        			<span class="badge badge-pill badge-dark">{{ announcement.date_posted|date:"F d, Y" }}</span></p>
+		                        		</a>
+		                        		{% else %}
+		                        		<p class="text-justify">{{ announcement.content }}
+		                        			<span class="badge badge-pill badge-dark">{{ announcement.date_posted|date:"F d, Y" }}</span></p>
+		                        		{% endif %}
+		                        		<hr>
+			    							{% if request.user.is_staff %}
+			    								&nbsp;<a href="{% url 'announcements:announcements-edit' announcement.slug %}" class="btn btn-warning btn-sm mt-1 mb-1">Edit</a>
+				    							<form class="form-group" style="float: left;" action="{% url 'announcements:announcements-delete-confirm' announcement.slug %}" method="POST">
+			    										{% csrf_token %}
+			    									<input class="btn btn-danger btn-sm mt-1 mb-1" type="submit" value="Delete">
+			    								</form>
+			    								<br><br><br>
+			    							{% endif %}
+									{% endfor %}
+		                      	</div>
+		                  		<div class="tab-pane fade" id="pop2" role="tabpanel" aria-labelledby="pop2-tab">
+		                       		<div class="pt-3"></div>
+		                       		<h2>Share your Opinion & Knowledge</h2>
+									<p class="text-justify"><small class="text-muted">Please follow conduct and honor the decorum of the club while posting any content. Any offensive or spam content will be prosecuted seriously.</small>
+									</p>
+									<a href="{% url 'blog:blog-create' %}" class="btn btn-success btn-sm mt-1 mb-1">Create Post</a>
+									<hr>
+		                        	{% for post in posts %}
+		                        		<article class="media">
+											<img class="rounded-circle article-img" src="{{post.author.profile.image.url}}">
+  											<div class="media-body">
+			    								<div class="article-metadata">
+			      									<a class="mr-2" href="#">{{ post.author }}</a>
+			      									<small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
+			    								</div>
+			    								<h2>{{ post.title }}</h2>
+			    								{% if request.user == post.author %}
+			    								&nbsp;<a href="{% url 'blog:blog-edit' request.user post.slug %}" class="btn btn-warning btn-sm mt-1 mb-1">Edit</a>
+				    							<form class="form-group" style="float: left;" action="{% url 'blog:blog-delete-confirm' request.user.username post.slug %}" method="POST">
+			    									{% csrf_token %}
+			    									<input class="btn btn-danger btn-sm mt-1 mb-1" type="submit" value="Delete">
+			    								</form>
+			    								{% endif %}
+			    								<hr>
+			    								<p class="article-content text-justify">{{ post.content }}</p>
+												{% if post.thumbnail %}
+			    									<a href="{{post.thumbnail.url}}" target="_blank"><img src="{{post.thumbnail.url}}" class="img-thumbnail" style="max-height: 300px;max-width: 300px;"></a>
+			    								{% endif %}
+											</div>
+										</article>
+										<br><br>
+									{% endfor %}
+		                      	</div>
+		                  		<div class="tab-pane fade" id="pop3" role="tabpanel" aria-labelledby="pop3-tab">
+		                       		<div class="pt-3"></div>
+		                       		{% for suggestion in suggestions %}
+		                        		<article class="media">
+											<img class="rounded-circle article-img" src="{{suggestion.user.profile.image.url}}">
+  											<div class="media-body">
+			    								<div class="article-metadata">
+			      									<a class="mr-2" href="#">{{ suggestion.user }}</a>
+			      									<small class="text-muted">{{ suggestion.date|date:"F d, Y" }}</small>
+			    								</div>
+			    								<h2>{{ suggestion.title }}</h2>
+			    								<p class="article-content text-justify">{{ suggestion.content }}</p>
+											</div>
+										</article>
+										<br>
+									{% endfor %}
+		                      	</div>
+		                	</div>
+	                	</div>
+                	</div>
+                	<br>
+				</div>
+				<div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
+					<h2>Catalog</h2>
+					<hr>
+					<nav class="nav-justified" id="tabsNav">
+		                <div class="nav nav-tabs " id="nav-tab" role="tablist">
+		                    <a class="nav-item nav-link active" id="Cpop1-tab" data-toggle="tab" href="#Cpop1" role="tab" aria-controls="Cpop1" aria-selected="true"><i class="fa fa-book fa-2x" aria-hidden="true"></i><br>All</a>
+		                </div>
+		            </nav>
+		            <div class="card">
+						<div class="card-body">
+		            		<div class="tab-content" id="nav-tabContent">
+		                		<div class="tab-pane fade show active" id="Cpop1" role="tabpanel" aria-labelledby="Cpop1-tab">
+		                    		<div class="pt-3"></div>
+		                    		<form class="form-inline" method="GET">
+			           					<input class="form-control" id="query" type="text" name="query" placeholder="Search Book">
+	            					</form>
+	            					<hr>
+									{% if request.user.is_staff %}
+								        <p class="text-justify"><small class="text-muted">Add Books to Catalog</small>
+										</p>
+										<a href="{% url 'catalog:book-create' %}" class="btn btn-success btn-sm mt-1 mb-1">Add Books</a>
+										<hr>
+									{% endif %}
+									<center>
+									    <div id="load" style="display: none" class="loader"></div>
+									</center>
+									<p class="text-justify" id="jsondump"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% else %}
+			<div class="row">
+				<div class="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-12">
+					<h2>View Panel</h2>
+					<hr>
+					<nav class="nav-justified" id="tabsNav">
+		                <div class="nav nav-tabs " id="nav-tab" role="tablist">
+		                    <a class="nav-item nav-link active" id="pop1-tab" data-toggle="tab" href="#pop1" role="tab" aria-controls="pop1" aria-selected="true"><i class="fa fa-bell" aria-hidden="true"></i><br>Announcements</a>
+		                    <a class="nav-item nav-link" id="pop2-tab" data-toggle="tab" href="#pop2" role="tab" aria-controls="pop2" aria-selected="false"><i class="fa fa-rss" aria-hidden="true"></i><br>Blogs</a>
+		                    <a class="nav-item nav-link" id="pop3-tab" data-toggle="tab" href="#pop3" role="tab" aria-controls="pop3" aria-selected="false"><i class="fa fa-database" aria-hidden="true"></i><br>Transactions</a>
+		                </div>
+		            </nav>
+		            <div class="card">
+						<div class="card-body">
+		                	<div class="tab-content" id="nav-tabContent">
+		                  		<div class="tab-pane fade show active" id="pop1" role="tabpanel" aria-labelledby="pop1-tab">
+		                        	<div class="pt-3"></div>
+		                        	{% if request.user.is_staff %}
+		                        	<p class="text-justify"><small class="text-muted">Please follow conduct and honor the decorum of the institute while posting any Announcement. Any offensive or spam content will be prosecuted seriously.</small>
+									</p>
+									<a href="{% url 'announcements:announcements-create' %}" class="btn btn-success btn-sm mt-1 mb-1">Make Announcement</a>
+									<br><br>
+									{% endif %}
+		                        	{% for announcement in announcements %}
+		                        		{% if announcement.attachments %}
+		                        		<a href="{{announcement.attachments.url}}" target="_blank">
+		                        			<p class="text-justify">{{ announcement.content }}
+		                        			<span class="badge badge-pill badge-dark">{{ announcement.date_posted|date:"F d, Y" }}</span></p>
+		                        		</a>
+		                        		{% else %}
+		                        		<p class="text-justify">{{ announcement.content }}
+		                        			<span class="badge badge-pill badge-dark">{{ announcement.date_posted|date:"F d, Y" }}</span></p>
+		                        		{% endif %}
+		                        		<hr>
+			    							{% if request.user.is_staff %}
+			    								&nbsp;<a href="{% url 'announcements:announcements-edit' announcement.slug %}" class="btn btn-warning btn-sm mt-1 mb-1">Edit</a>
+				    							<form class="form-group" style="float: left;" action="{% url 'announcements:announcements-delete-confirm' announcement.slug %}" method="POST">
+			    										{% csrf_token %}
+			    									<input class="btn btn-danger btn-sm mt-1 mb-1" type="submit" value="Delete">
+			    								</form>
+			    								<br><br><br>
+			    							{% endif %}
+									{% endfor %}
+		                      	</div>
+		                  		<div class="tab-pane fade" id="pop2" role="tabpanel" aria-labelledby="pop2-tab">
+		                       		<div class="pt-3"></div>
+		                       		<h2>Share your Opinion & Knowledge</h2>
+									<p class="text-justify"><small class="text-muted">Please follow conduct and honor the decorum of the club while posting any content. Any offensive or spam content will be prosecuted seriously.</small>
+									</p>
+									<a href="{% url 'blog:blog-create' %}" class="btn btn-success btn-sm mt-1 mb-1">Create Post</a>
+									<hr>
+		                        	{% for post in posts %}
+		                        		<article class="media">
+											<img class="rounded-circle article-img" src="{{post.author.profile.image.url}}">
+  											<div class="media-body">
+			    								<div class="article-metadata">
+			      									<a class="mr-2" href="#">{{ post.author }}</a>
+			      									<small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
+			    								</div>
+			    								<h2>{{ post.title }}</h2>
+			    								{% if request.user == post.author %}
+			    								&nbsp;<a href="{% url 'blog:blog-edit' request.user post.slug %}" class="btn btn-warning btn-sm mt-1 mb-1">Edit</a>
+				    							<form class="form-group" style="float: left;" action="{% url 'blog:blog-delete-confirm' request.user.username post.slug %}" method="POST">
+			    									{% csrf_token %}
+			    									<input class="btn btn-danger btn-sm mt-1 mb-1" type="submit" value="Delete">
+			    								</form>
+			    								{% endif %}
+			    								<hr>
+			    								<p class="article-content text-justify">{{ post.content }}</p>
+												{% if post.thumbnail %}
+			    									<a href="{{post.thumbnail.url}}" target="_blank"><img src="{{post.thumbnail.url}}" class="img-thumbnail" style="max-height: 300px;max-width: 300px;"></a>
+			    								{% endif %}
+											</div>
+										</article>
+										<br><br>
+									{% endfor %}
+		                      	</div>
+		                  		<div class="tab-pane fade" id="pop3" role="tabpanel" aria-labelledby="pop3-tab">
+		                       		<div class="pt-3"></div>
+		                        	<div class="row">
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>User/RollNo</b>
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Book</b>
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Issue Date</b>
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Return Date</b>
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Fine</b>
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											<b>Status</b>
+										</div>
+									</div>
+									<hr>
+		                        	{% for transaction in transactions %}
+		                        	<div class="row">
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											{{transaction.user}}
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											{{transaction.book.book_title}}
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											{{transaction.issue_date}}
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											{% if transaction.return_date == None %}
+											Pending
+											{% else %}
+											{{transaction.return_date}}
+											{% endif %}
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											{{transaction.fine}}
+										</div>
+										<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+											{% if transaction.fine_status == False %}
+											Pending
+											{% else %}
+											Paid
+											{% endif %}
+										</div>
+									</div>
+									<hr>
+		                        	{% endfor %}
+		                      	</div>
+		                	</div>
+	                	</div>
+                	</div>
+                	<br>
+				</div>
+				<div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
+					<h2>Catalog</h2>
+					<hr>
+					<nav class="nav-justified" id="tabsNav">
+		                <div class="nav nav-tabs " id="nav-tab" role="tablist">
+		                    <a class="nav-item nav-link active" id="Cpop1-tab" data-toggle="tab" href="#Cpop1" role="tab" aria-controls="Cpop1" aria-selected="true"><i class="fa fa-book" aria-hidden="true"></i><br>All</a>
+		                </div>
+		            </nav>
+		            <div class="card">
+						<div class="card-body">
+		            		<div class="tab-content" id="nav-tabContent">
+		                		<div class="tab-pane fade show active" id="Cpop1" role="tabpanel" aria-labelledby="Cpop1-tab">
+		                    		<div class="pt-3"></div>
+		                    		<form class="form-inline" method="GET">
+			           					<input class="form-control" id="query" type="text" name="query" placeholder="Search Book">
+	            					</form>
+	            					<hr>
+									{% if request.user.is_staff %}
+								        <p class="text-justify"><small class="text-muted">Add Books to Catalog</small>
+										</p>
+										<a href="{% url 'catalog:book-create' %}" class="btn btn-success btn-sm mt-1 mb-1">Add Books</a>
+										<hr>
+									{% endif %}
+									<p class="text-justify" id="jsondump"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endif %}
+
+		{% endblock %}
+
+		{% block script %}
+		<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+		<script src="https://code.highcharts.com/highcharts.src.js"></script>
+		<script>
+			$("#query").keyup(function () {
+      			var query=$(this).val();
+      			if(query.length!=0){
+      			    $("#load").css("display", "block");
+      			    $("#jsondump").css("display", "none");
+	      			$.ajax({
+				        url: "{% url 'catalog:book-search' %}",
+				        data: {
+				          'query': query
+				        },
+				        success: searchSuccess,
+				        dataType: 'html'
+	      			});
+      			}
+      			else{
+      			    $("#load").css("display", "none");
+      			    $("#jsondump").css("display", "block");
+      				$('#jsondump').html("<b>Keep Looking!</b>");
+      			}
+    		});
+
+    		function searchSuccess(data,textStatus,jqXHR)
+    		{
+    		    $("#load").css("display", "none");
+    		    $("#jsondump").css("display", "block");
+    			$('#jsondump').html(data);
+    		}
+
+    		$("#admintransquery").keyup(function () {
+      			var admintransquery=$(this).val();
+      			if(admintransquery.length!=0){
+	      			$.ajax({
+				        url: "{% url 'transactions:admin-trans-search' %}",
+				        data: {
+				          'admintransquery': admintransquery
+				        },
+				        success: adminTransSearchSuccess,
+				        dataType: 'html'
+	      			});
+	      		}
+	      		else{
+      				$('#admintransjsondump').html("<b>Keep Looking !</b>");
+      			}
+    		});
+
+    		function adminTransSearchSuccess(data,textStatus,jqXHR)
+    		{
+    			$('#admintransjsondump').html(data);
+    		}
+
+    		$("#transquery").keyup(function () {
+      			var transquery=$(this).val();
+      			if(transquery.length!=0){
+	      			$.ajax({
+				        url: "{% url 'transactions:transaction-stack-add' %}",
+				        data: {
+				          'book_number': transquery
+				        },
+				        success: StackSuccess,
+				        dataType: 'html'
+	      			});
+	      		}
+	      		else{
+      				$('#messagedump').html("<b>Keep Looking or Complete the Transaction !</b>");
+      			}
+    		});
+
+    		$("#mquery").keyup(function () {
+      			var mquery=$(this).val();
+      			if(mquery.length!=0){
+	      			$.ajax({
+				        url: "{% url 'catalog:book-mtrans-search' %}",
+				        data: {
+				          'mquery': mquery
+				        },
+				        success: mquerySuccess,
+				        dataType: 'html'
+	      			});
+	      			 $('#messagedump').html("");
+	      		}
+	      		else{
+      				$('#messagedump').html("<b>Keep Looking or Complete the Transaction !</b>");
+      				$('#mqueryjsondump').html("");
+      			}
+    		});
+
+    		function mquerySuccess(data,textStatus,jqXHR){
+    			$('#mqueryjsondump').html(data);
+    		}
+
+    		function AddtoStack(book_number){
+    			$.ajax({
+    				url:"{% url 'transactions:transaction-stack-add' %}",
+    				dataType:'html',
+    				data: {
+    					'book_number': book_number
+    				},
+    				success: StackSuccess
+    			});
+    		}
+
+    		function RemoveFromStack(book_number){
+    			$.ajax({
+    				url:"{% url 'transactions:transaction-stack-delete' %}",
+    				dataType:'html',
+    				data: {
+    					'book_number': book_number
+    				},
+    				success: StackSuccess
+    			});
+    		}
+
+    		function StackSuccess(data,textStatus,jqXHR)
+    		{
+    			$('#messagedump').html(data);
+    			TransactionStackAjax();
+    			clearForm();
+    		}
+
+    		function clearForm(){
+    			document.getElementById("transquery").value="";
+    		}
+
+    		function TransactionStackAjax(){
+            	$.ajax({
+    				url:"{% url 'transactions:transaction-stack' %}",
+    				dataType:'html',
+    				success: TransStackSuccess
+    			});
+        	}
+
+    		function TransStackSuccess(data,textStatus,jqXHR)
+    		{
+    			$('#transStackdump').html(data);
+    		}
+
+    		$("#userquery").keyup(function () {
+      			var userquery=$(this).val();
+      			if(userquery.length!=0){
+	      			$.ajax({
+				        url: "{% url 'transactions:admin-user-search' %}",
+				        data: {
+				          'userquery': userquery
+				        },
+				        success: UserLoadSuccess,
+				        dataType: 'html'
+	      			});
+	      		}
+	      		else{
+      				$('#userloaddump').html("<b>Keep Looking or Complete the Transaction !</b>");
+      			}
+    		});
+
+    		function UserLoadSuccess(data,textStatus,jqXHR)
+    		{
+    			$('#userloaddump').html(data);
+    		}
+
+    		function TransactionFilters(key){
+    			var filter=key;
+    			$.ajax({
+    				url:"{% url 'transactions:transaction-filters' %}",
+    				data:{
+    					'filter':filter
+    				},
+    				dataType:'html',
+    				success: FilterSuccess
+    			});
+    		}
+
+    		function FilterSuccess(data,textStatus,jqXHR){
+    			document.getElementById('baseTransactions1').style.display='none';
+    			document.getElementById('baseTransactions2').style.display='none';
+    			$('#filterdump').html(data);
+
+    		}
+
+    		function GenderChartStream(){
+    			$.ajax({
+    				url:"{% url 'transactions:transactions-gender-chart' %}",
+    				dataType:'html',
+    				success: ChartSuccess
+    			});
+    		}
+
+    		function validate() {
+        		if (document.getElementById('nobarcode').checked) {
+            		document.getElementById('mquery').style.display="block";
+        		}
+        		else {
+            		document.getElementById('mquery').style.display="none";
+            	}
+    		}
+
+			function ChartSuccess(data,textStatus,jqXHR)
+    		{
+    			$('#chartDump').html(data);
+    		}
+
+       		$(document).ready(TransactionStackAjax());
+
+		</script>
+		{% endblock %}

@@ -1,0 +1,17 @@
+<html>
+<head>
+</head>
+<body>
+  <h1>Transaction Record</h1>
+  <p>{{date}}</p>
+  <p>{{college}}</p>
+  <p>{{transType}}</p>
+  ---------------------------
+  <br>{{user}}
+  <ol>
+  {%for book in books%}
+      <li>{{book.book_number}} - {{book.book_title}}</li>
+  {% endfor %}
+  </ol>
+</body>
+</html>
