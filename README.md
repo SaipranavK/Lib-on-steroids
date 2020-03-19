@@ -1,4 +1,4 @@
-# Libonsteroids
+# Lib-on-steroids
 ## In a Nutshell 
 Library Management system with kisok support for autonomous book lending and returns
 ## Developed with
