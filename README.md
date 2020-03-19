@@ -10,4 +10,4 @@ Ajax - https://api.jquery.com/category/ajax/
 Bootstrap - https://getbootstrap.com/docs/4.4/getting-started/introduction/
 ## Local Execution
 pip install -r requirements.txt
-python manage.py runserver
+<br>python manage.py runserver
