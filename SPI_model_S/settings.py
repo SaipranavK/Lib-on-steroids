@@ -135,15 +135,20 @@ STATICFILES_DIRS=(
 )
 STATIC_ROOT= os.path.join(BASE_DIR,'static_media/')
 
+# Media files 
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
+# Form Templates
 CRISPY_TEMPLATE_PACK='bootstrap4'
 
+# Custom User model
 AUTH_USER_MODEL = 'accounts.User'
 
+# Default redirect
 LOGIN_REDIRECT_URL='/core/'
 
+# Logout on close
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Mailer module
