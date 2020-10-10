@@ -7,14 +7,14 @@ from .forms import ProfileUpdateForm
 from .models import User
 
 def login_view(request):
-	if(request.method=='POST'):
+	if(request.method=='POST' and 'setup' not in request.POST):
 		authForm=AuthenticationForm(data=request.POST)
 		if(authForm.is_valid()):
 			user=authForm.get_user()
 			login(request,user)
 			messages.success(request,f'Welcome Back')
 			if(user.email=='' or user.pin=='0000'):
-				return render(request,'accounts/setup.html')
+				return redirect("accounts:accounts-setup")
 			else:
 				return redirect('/core/')
 		
@@ -67,7 +67,6 @@ def setup(request):
 		return redirect('/core/')
 
 	else:
-		messages.success(request,f'oops!')
-		return redirect('/core/')
+		return render(request, 'accounts/setup.html')
 
 	
